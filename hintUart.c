@@ -68,10 +68,30 @@ void pM_addNormalBit(pixelMap* pM, bool bit, bool nextBit){
 }
 
 //Put the shape of a bal on a pixelMap
-void pM_addBALL(pixelMap* pM, boolArrayList* bal){
+void pM_addBALL(pixelMap* pM,const boolArrayList* bal){
     for(int i=0; i<bal->length-1; i++)
         pM_addNormalBit(pM, bal->a[i], bal->a[i+1]);
     pM_addLastBit(pM, bal->a[bal->length+1]);
 }
 
+//Create a bal representing the signal needed to transmit a character throught UART
+boolArrayList* pM_balUartChar(char ch){
+    boolArrayList* ret = bal_binToBal("0"); //UART prefix
+    boolArrayList* bal_ch = bal_stringToBal(&ch, 1);
+    bal_concatDel(ret, bal_ch);
+    bal_append(ret, true); //UART sufix
+    for(int i=0; i<DEFAULT_UART_PADDING; i++) //If nedeed, additional sufix
+        bal_append(ret, true);
+    return ret;
+}
+
+//Create a bal representing the signal needed to transmit a string throught UART
+boolArrayList* pM_balUartString(const char* str, size_t len){
+    boolArrayList* ret = bal_init();
+    for(size_t i=0; i<len; i++){
+        boolArrayList* bal_ch = pM_balUartChar(str[i]);
+        bal_concatDel(ret, bal_ch);
+    }
+    return ret;
+}
 

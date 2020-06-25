@@ -11,6 +11,7 @@ typedef struct pixelMap_struct {
 
 #define DEFAULT_PIXEL_SIZE 1
 #define DEFAULT_BIT_LENGTH 5
+#define DEFAULT_UART_PADDING 0
 
 //Basic transformation on pixelMap
 pixelMap* pM_init();
@@ -22,5 +23,9 @@ void pM_addTransition(pixelMap* pM);
 void pM_addBit(pixelMap* pM, bool bit);
 void pM_addLastBit(pixelMap* pM, bool bit);
 void pM_addNormalBit(pixelMap* pM, bool bit, bool nextBit);
-void pM_addBAL(pixelMap* pM, boolArrayList* bal);
+void pM_addBAL(pixelMap* pM, const boolArrayList* bal);
+
+//Generating usefull bal
+boolArrayList* pM_balUartChar(char ch);
+boolArrayList* pM_balUartString(const char* str, size_t len);
 
