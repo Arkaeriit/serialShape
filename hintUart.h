@@ -18,4 +18,9 @@ void pM_addTop(pixelMap* pM);
 void pM_addBottom(pixelMap* pM);
 void pM_addTransition(pixelMap* pM);
 
+//Adding elements on pixelMap
+void pM_addBit(pixelMap* pM, bool bit);
+void pM_addLastBit(pixelMap* pM, bool bit);
+void pM_addNormalBit(pixelMap* pM, bool bit, bool nextBit);
+void pM_addBAL(pixelMap* pM, boolArrayList* bal);
 
