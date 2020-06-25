@@ -105,57 +105,16 @@ boolArrayList* sS_balUartString(const char* str, size_t len, int padding){
     return ret;
 }
 
-//Generate a header for a pbm
-char* pbm_genHeader(signalShape* sS, const char* comment, int pix_size){
-    char* ret = malloc(STR_BUFFER_SIZE);
-    int length = sS->padding->length * pix_size;
-    int height = (4 + SIGNAL_HEIGHT)  * pix_size;
-    sprintf(ret, "P1\n# %s\n%i %i\n",comment, length, height);
-    return ret;
-}
-
-//Generate a line for the PBM
-char* pbm_genLine(boolArrayList* line, int pix_size){
-    char* ret = malloc(STR_BUFFER_SIZE);
-    for(int i=0; i<line->length; i++){
-        for(int j=0; j<pix_size; j++){
-            if(line->a[i])
-                ret[i * pix_size + j] = '1';
-            else
-                ret[i * pix_size + j] = '0';
-        }
-    }
-    ret[pix_size * (line->length)] = 0; //End the string to ensure the lack of garbage after it
-    return ret;
-}
-
 //Create a pbm file from a signalShape
-void pbm_createPicture(const char* filename, const char* comment, signalShape* sS, int pix_size){
-    FILE* f = fopen(filename, "w"); //TODO : check for errors
-    char* header = pbm_genHeader(sS, comment, pix_size);
-    char* linePad = pbm_genLine(sS->padding, pix_size);
-    char* lineTop = pbm_genLine(sS->topRow, pix_size);
-    char* lineBot = pbm_genLine(sS->bottomRow, pix_size);
-    char* lineMid = pbm_genLine(sS->middle, pix_size);
-    fputs(header, f);
-    sS_copyLineXtimes(linePad, f, pix_size);
-    sS_copyLineXtimes(lineTop, f, pix_size);
-    sS_copyLineXtimes(lineMid, f, pix_size * SIGNAL_HEIGHT);
-    sS_copyLineXtimes(lineBot, f, pix_size);
-    sS_copyLineXtimes(linePad, f, pix_size);
-    free(header);
-    free(linePad);
-    free(lineTop);
-    free(lineMid);
-    free(lineBot);
-    fclose(f);
-}
-
-//Copy a line a determined number of times on a file and append a '\n' each time
-void sS_copyLineXtimes(const char* str, FILE* stream, int times){
-    for(int i=0; i<times; i++){
-        fputs(str, stream);
-        fputc('\n', stream);
-    }
+void sS_createPicture(const char* filename, const char* comment, signalShape* sS, int pix_size){
+    pixMap* pM = pbm_initPixMap(sS->padding->length, 4 + SIGNAL_HEIGHT);
+    pM->map[0] = sS->padding;
+    pM->map[1] = sS->topRow;
+    pM->map[pM->height-2] = sS->bottomRow;
+    pM->map[pM->height-1] = sS->padding;
+    for(uint64_t i=2; i<pM->height-2; i++)
+        pM->map[i] = sS->middle;
+    pbm_createPicture(filename, comment, pM, pix_size);
+    free(pM);
 }
 

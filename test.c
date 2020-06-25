@@ -8,8 +8,8 @@ void test1(){
     signalShape* sS_pad = sS_init();
     sS_addBAL(sS, bal);
     sS_addBAL(sS_pad, bal_pad);
-    pbm_createPicture("test.pbm", "a test", sS, 2);
-    pbm_createPicture("test_pad.pbm", "a test with padding", sS_pad, 2);
+    sS_createPicture("test.pbm", "a test", sS, 2);
+    sS_createPicture("test_pad.pbm", "a test with padding", sS_pad, 2);
     bal_free(bal);
     sS_free(sS);
     bal_free(bal_pad);
@@ -21,7 +21,7 @@ void test2(){
     boolArrayList* bal_mini = sS_balUartString(mini_str, strlen(mini_str), 0);
     signalShape* sS_mini = sS_init();
     sS_addBAL(sS_mini, bal_mini);
-    pbm_createPicture("test_mini.pbm","a mini test", sS_mini, 1);
+    sS_createPicture("test_mini.pbm","a mini test", sS_mini, 1);
     bal_free(bal_mini);
     sS_free(sS_mini);
 }
