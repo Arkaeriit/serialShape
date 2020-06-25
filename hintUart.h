@@ -2,12 +2,12 @@
 
 //This struct is ment to represent the pixels in a picture
 //representing a digital signel
-typedef struct pixelMap_struct {
+typedef struct signalShape_struct {
     boolArrayList* padding;
     boolArrayList* topRow;
     boolArrayList* middle;
     boolArrayList* bottomRow;
-} pixelMap;
+} signalShape;
 
 #define DEFAULT_PIXEL_SIZE 1
 #define DEFAULT_BIT_LENGTH 5
@@ -15,28 +15,28 @@ typedef struct pixelMap_struct {
 #define STR_BUFFER_SIZE 4096
 #define SIGNAL_HEIGHT 5
 
-//Basic transformation on pixelMap
-pixelMap* pM_init();
-void pM_addTop(pixelMap* pM);
-void pM_addBottom(pixelMap* pM);
-void pM_addTransition(pixelMap* pM);
-void pM_free(pixelMap* pM);
+//Basic transformation on signalShape
+signalShape* sS_init();
+void sS_addTop(signalShape* sS);
+void sS_addBottom(signalShape* sS);
+void sS_addTransition(signalShape* sS);
+void sS_free(signalShape* sS);
 
-//Adding elements on pixelMap
-void pM_addBit(pixelMap* pM, bool bit);
-void pM_addLastBit(pixelMap* pM, bool bit);
-void pM_addNormalBit(pixelMap* pM, bool bit, bool nextBit);
-void pM_addBAL(pixelMap* pM, const boolArrayList* bal);
+//Adding elements on signalShape
+void sS_addBit(signalShape* sS, bool bit);
+void sS_addLastBit(signalShape* sS, bool bit);
+void sS_addNormalBit(signalShape* sS, bool bit, bool nextBit);
+void sS_addBAL(signalShape* sS, const boolArrayList* bal);
 
 //Generating usefull bal
-boolArrayList* pM_balUartChar(char ch, int padding);
-boolArrayList* pM_balUartString(const char* str, size_t len, int padding);
+boolArrayList* sS_balUartChar(char ch, int padding);
+boolArrayList* sS_balUartString(const char* str, size_t len, int padding);
 
-//Generating pbm out of pixelMap
-char* pbm_genHeder(pixelMap* pM, const char* comment, int pix_size);
+//Generating pbm out of signalShape
+char* pbm_genHeder(signalShape* sS, const char* comment, int pix_size);
 char* pbm_genLine(boolArrayList* line, int pix_size);
-void pbm_createPicture(const char* filename, const char* comment, pixelMap* pM, int pix_size);
+void pbm_createPicture(const char* filename, const char* comment, signalShape* sS, int pix_size);
 
 //Helper function
-void pM_copyLineXtimes(const char* str, FILE* stream, int times);
+void sS_copyLineXtimes(const char* str, FILE* stream, int times);
 
