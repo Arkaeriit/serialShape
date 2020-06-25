@@ -34,6 +34,15 @@ void pM_addTransision(pixelMap* pM) {
     bal_append(pM->bottomRow, true);
 }
 
+//Free a pM struct
+void pM_free(pixelMap* pM){
+    bal_free(pM->padding);
+    bal_free(pM->topRow);
+    bal_free(pM->bottomRow);
+    bal_free(pM->middle);
+    free(pM);
+}
+
 //Add the shape of a bit to a pixelMap while omiting the last pixel in order to let
 //us decide what to do with ot afterward
 void pM_addBit(pixelMap* pM, bool bit) {

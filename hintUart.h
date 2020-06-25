@@ -20,6 +20,7 @@ pixelMap* pM_init();
 void pM_addTop(pixelMap* pM);
 void pM_addBottom(pixelMap* pM);
 void pM_addTransition(pixelMap* pM);
+void pM_free(pixelMap* pM);
 
 //Adding elements on pixelMap
 void pM_addBit(pixelMap* pM, bool bit);
