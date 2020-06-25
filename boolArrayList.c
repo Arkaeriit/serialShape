@@ -174,6 +174,21 @@ boolArrayList* bal_subBal(const boolArrayList* bal, uint64_t a, uint64_t b){
 }
 
 /*
+ * Reverse a bal. The first element from bal->a become the last and the second become
+ * the second to last...
+ *  Arguments:
+ *      bal : a pointer to the boolArrayList to reverse
+ */
+void bal_reverse(boolArrayList* bal){
+    boolArrayList* tmp = bal_init(); //Creating the reversed array
+    for(size_t i=0; i<bal->length; i++)
+        bal_append(tmp, bal->a[bal->length-i-1]);
+    free(bal->a); //Swaping the content of the old with the content of the new
+    bal->a = tmp->a;
+    free(tmp);
+}
+
+/*
  * Write the content of a boolean array list into a file.
  *  Arguments:
  *      bal : the boolean array list. It must have a size multiple of 8

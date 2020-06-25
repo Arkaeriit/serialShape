@@ -29,6 +29,7 @@ void bal_concat(boolArrayList* bal,const boolArrayList* next);
 void bal_concatDel(boolArrayList* bal, boolArrayList* next);
 void bal_completeTo8(boolArrayList* bal);
 boolArrayList* bal_subBal(const boolArrayList* bal, uint64_t a, uint64_t b);
+void bal_reverse(boolArrayList* bal);
 
 //Using bal
 void bal_writeFile(const boolArrayList* bal, const char* filename);

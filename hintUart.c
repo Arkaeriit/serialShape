@@ -77,28 +77,29 @@ void pM_addNormalBit(pixelMap* pM, bool bit, bool nextBit){
 }
 
 //Put the shape of a bal on a pixelMap
-void pM_addBALL(pixelMap* pM,const boolArrayList* bal){
+void pM_addBAL(pixelMap* pM,const boolArrayList* bal){
     for(int i=0; i<bal->length-1; i++)
         pM_addNormalBit(pM, bal->a[i], bal->a[i+1]);
-    pM_addLastBit(pM, bal->a[bal->length+1]);
+    pM_addLastBit(pM, bal->a[bal->length-1]);
 }
 
 //Create a bal representing the signal needed to transmit a character throught UART
-boolArrayList* pM_balUartChar(char ch){
+boolArrayList* pM_balUartChar(char ch, int padding){
     boolArrayList* ret = bal_binToBal("0"); //UART prefix
     boolArrayList* bal_ch = bal_stringToBal(&ch, 1);
+    bal_reverse(bal_ch); //Choosing the good endian
     bal_concatDel(ret, bal_ch);
     bal_append(ret, true); //UART sufix
-    for(int i=0; i<DEFAULT_UART_PADDING; i++) //If nedeed, additional sufix
+    for(int i=0; i<padding; i++) //If nedeed, additional sufix
         bal_append(ret, true);
     return ret;
 }
 
 //Create a bal representing the signal needed to transmit a string throught UART
-boolArrayList* pM_balUartString(const char* str, size_t len){
+boolArrayList* pM_balUartString(const char* str, size_t len, int padding){
     boolArrayList* ret = bal_init();
     for(size_t i=0; i<len; i++){
-        boolArrayList* bal_ch = pM_balUartChar(str[i]);
+        boolArrayList* bal_ch = pM_balUartChar(str[i], padding);
         bal_concatDel(ret, bal_ch);
     }
     return ret;
@@ -108,7 +109,7 @@ boolArrayList* pM_balUartString(const char* str, size_t len){
 char* pbm_genHeader(pixelMap* pM, const char* comment, int pix_size){
     char* ret = malloc(STR_BUFFER_SIZE);
     int length = pM->padding->length * pix_size;
-    int height = 4 * SIGNAL_HEIGHT  * pix_size;
+    int height = (4 + SIGNAL_HEIGHT)  * pix_size;
     sprintf(ret, "P1\n# %s\n%i %i\n",comment, length, height);
     return ret;
 }
@@ -124,6 +125,7 @@ char* pbm_genLine(boolArrayList* line, int pix_size){
                 ret[i * pix_size + j] = '0';
         }
     }
+    ret[pix_size * (line->length)] = 0; //End the string to ensure the lack of garbage after it
     return ret;
 }
 
@@ -138,7 +140,7 @@ void pbm_createPicture(const char* filename, const char* comment, pixelMap* pM, 
     fputs(header, f);
     pM_copyLineXtimes(linePad, f, pix_size);
     pM_copyLineXtimes(lineTop, f, pix_size);
-    pM_copyLineXtimes(lineMid, f, pix_size);
+    pM_copyLineXtimes(lineMid, f, pix_size * SIGNAL_HEIGHT);
     pM_copyLineXtimes(lineBot, f, pix_size);
     pM_copyLineXtimes(linePad, f, pix_size);
     free(header);

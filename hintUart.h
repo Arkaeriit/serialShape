@@ -11,7 +11,7 @@ typedef struct pixelMap_struct {
 
 #define DEFAULT_PIXEL_SIZE 1
 #define DEFAULT_BIT_LENGTH 5
-#define DEFAULT_UART_PADDING 0
+#define DEFAULT_UART_PADDING 30
 #define STR_BUFFER_SIZE 4096
 #define SIGNAL_HEIGHT 5
 
@@ -29,8 +29,8 @@ void pM_addNormalBit(pixelMap* pM, bool bit, bool nextBit);
 void pM_addBAL(pixelMap* pM, const boolArrayList* bal);
 
 //Generating usefull bal
-boolArrayList* pM_balUartChar(char ch);
-boolArrayList* pM_balUartString(const char* str, size_t len);
+boolArrayList* pM_balUartChar(char ch, int padding);
+boolArrayList* pM_balUartString(const char* str, size_t len, int padding);
 
 //Generating pbm out of pixelMap
 char* pbm_genHeder(pixelMap* pM, const char* comment, int pix_size);
