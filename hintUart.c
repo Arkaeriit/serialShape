@@ -95,3 +95,56 @@ boolArrayList* pM_balUartString(const char* str, size_t len){
     return ret;
 }
 
+//Generate a header for a pbm
+char* pbm_genHeader(pixelMap* pM, const char* comment, int pix_size){
+    char* ret = malloc(STR_BUFFER_SIZE);
+    int length = pM->padding->length * pix_size;
+    int height = 4 * SIGNAL_HEIGHT  * pix_size;
+    sprintf(ret, "P1\n# %s\n%i %i\n",comment, length, height);
+    return ret;
+}
+
+//Generate a line for the PBM
+char* pbm_genLine(boolArrayList* line, int pix_size){
+    char* ret = malloc(STR_BUFFER_SIZE);
+    for(int i=0; i<line->length; i++){
+        for(int j=0; j<pix_size; j++){
+            if(line->a[i])
+                ret[i * pix_size + j] = '1';
+            else
+                ret[i * pix_size + j] = '0';
+        }
+    }
+    return ret;
+}
+
+//Create a pbm file from a pixelMap
+void pbm_createPicture(const char* filename, const char* comment, pixelMap* pM, int pix_size){
+    FILE* f = fopen(filename, "w"); //TODO : check for errors
+    char* header = pbm_genHeader(pM, comment, pix_size);
+    char* linePad = pbm_genLine(pM->padding, pix_size);
+    char* lineTop = pbm_genLine(pM->topRow, pix_size);
+    char* lineBot = pbm_genLine(pM->bottomRow, pix_size);
+    char* lineMid = pbm_genLine(pM->middle, pix_size);
+    fputs(header, f);
+    pM_copyLineXtimes(linePad, f, pix_size);
+    pM_copyLineXtimes(lineTop, f, pix_size);
+    pM_copyLineXtimes(lineMid, f, pix_size);
+    pM_copyLineXtimes(lineBot, f, pix_size);
+    pM_copyLineXtimes(linePad, f, pix_size);
+    free(header);
+    free(linePad);
+    free(lineTop);
+    free(lineMid);
+    free(lineBot);
+    fclose(f);
+}
+
+//Copy a line a determined number of times on a file and append a '\n' each time
+void pM_copyLineXtimes(const char* str, FILE* stream, int times){
+    for(int i=0; i<times; i++){
+        fputs(str, stream);
+        fputc('\n', stream);
+    }
+}
+
